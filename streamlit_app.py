@@ -61,14 +61,20 @@ def dfs(adj, start):
 
 
 def dijkstra(adj, start):
+    if start not in adj:
+        raise ValueError(f"Đỉnh {start} không tồn tại trong đồ thị")
+
     dist = {v: float("inf") for v in adj}
     dist[start] = 0
     pq = [(0, start)]
-    print(f"Start Dijkstra from: {start}")  # Debug: In ra đỉnh xuất phát
+
+    # Debug: In ra thông tin ban đầu
+    print(f"Start Dijkstra from: {start}")
 
     while pq:
         d, u = heapq.heappop(pq)
-        print(f"Processing node {u} with distance {d}")  # Debug: In ra mỗi đỉnh đang được xử lý
+        # Debug: In ra đỉnh đang xử lý và khoảng cách
+        print(f"Processing node {u} with distance {d}")
 
         if d > dist[u]:
             continue
@@ -77,9 +83,11 @@ def dijkstra(adj, start):
             if dist[u] + w < dist[v]:
                 dist[v] = dist[u] + w
                 heapq.heappush(pq, (dist[v], v))
-                print(f"Updating distance of {v} to {dist[v]}")  # Debug: In ra cập nhật khoảng cách
+                # Debug: In ra thông tin khi cập nhật khoảng cách
+                print(f"Updating distance of {v} to {dist[v]}")
 
-    print(f"Final distances: {dist}")  # Debug: In ra kết quả cuối cùng
+    # Debug: In ra kết quả cuối cùng
+    print(f"Final distances: {dist}")
     return dist
 
 
@@ -205,14 +213,14 @@ algorithm = st.selectbox(
 if st.button("Chạy thuật toán"):
     try:
         if input_text.strip().startswith("{"):     
-            adj_list = json.loads(input_text) 
+            adj_list = json.loads(input_text)  # Dữ liệu JSON nhập vào
         else:     
-            adj_list = parse_edge_list(input_text)
+            adj_list = parse_edge_list(input_text)  # Dữ liệu nhập theo dạng danh sách kề
         st.subheader("Danh sách kề")
         st.json(adj_list)
 
         if algorithm in ["BFS", "DFS", "Dijkstra"]:
-            start = st.selectbox("Chọn đỉnh bắt đầu", list(adj_list.keys()))
+            start = st.selectbox("Chọn đỉnh bắt đầu", list(adj_list.keys()))  # Điểm xuất phát
 
         if algorithm == "BFS":
             st.subheader("Kết quả BFS")
@@ -224,7 +232,8 @@ if st.button("Chạy thuật toán"):
 
         elif algorithm == "Dijkstra":
             st.subheader("Khoảng cách ngắn nhất")
-            st.json(dijkstra(adj_list, start))
+            result = dijkstra(adj_list, start)  # Gọi thuật toán Dijkstra với điểm xuất phát
+            st.json(result)
 
         elif algorithm == "Prim":
             mst, total = prim(adj_list)
@@ -253,5 +262,3 @@ if st.button("Chạy thuật toán"):
     except Exception as e:
         st.error("Lỗi dữ liệu đầu vào")
         st.code(str(e))
-
-
