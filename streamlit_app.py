@@ -64,9 +64,12 @@ def dijkstra(adj, start):
     dist = {v: float("inf") for v in adj}
     dist[start] = 0
     pq = [(0, start)]
+    print(f"Start Dijkstra from: {start}")  # Debug: In ra đỉnh xuất phát
 
     while pq:
         d, u = heapq.heappop(pq)
+        print(f"Processing node {u} with distance {d}")  # Debug: In ra mỗi đỉnh đang được xử lý
+
         if d > dist[u]:
             continue
         for e in adj[u]:
@@ -74,6 +77,9 @@ def dijkstra(adj, start):
             if dist[u] + w < dist[v]:
                 dist[v] = dist[u] + w
                 heapq.heappush(pq, (dist[v], v))
+                print(f"Updating distance of {v} to {dist[v]}")  # Debug: In ra cập nhật khoảng cách
+
+    print(f"Final distances: {dist}")  # Debug: In ra kết quả cuối cùng
     return dist
 
 
@@ -247,4 +253,5 @@ if st.button("Chạy thuật toán"):
     except Exception as e:
         st.error("Lỗi dữ liệu đầu vào")
         st.code(str(e))
+
 
