@@ -7,6 +7,24 @@ st.set_page_config(page_title="Quản lý giao thông – Logistics")
 st.title("Ứng dụng quản lý giao thông – Logistics")
 st.write("Môn: Cấu trúc rời rạc")
 
+def parse_edge_list(text):
+    adj = {}
+    lines = text.strip().splitlines()
+
+    for line in lines:
+        u, v, w = line.split()
+        w = int(w)
+
+        if u not in adj:
+            adj[u] = []
+        if v not in adj:
+            adj[v] = []
+
+        adj[u].append({"v": v, "w": w})
+        adj[v].append({"v": u, "w": w})  # đồ thị vô hướng
+
+    return adj
+
 # =======================
 # Thuật toán
 # =======================
@@ -180,7 +198,10 @@ algorithm = st.selectbox(
 
 if st.button("Chạy thuật toán"):
     try:
-        adj_list = json.loads(input_text)
+        if input_text.strip().startswith("{"):     
+            adj_list = json.loads(input_text) 
+        else:     
+            adj_list = parse_edge_list(input_text)
         st.subheader("Danh sách kề")
         st.json(adj_list)
 
@@ -226,3 +247,4 @@ if st.button("Chạy thuật toán"):
     except Exception as e:
         st.error("Lỗi dữ liệu đầu vào")
         st.code(str(e))
+
